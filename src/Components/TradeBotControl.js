@@ -1,4 +1,3 @@
-// src/Components/TradeBotControl.js
 import React, { useState } from "react";
 import { startGridBot, stopGridBot } from "../Services/Api";
 
@@ -12,7 +11,16 @@ function TradeBotControl() {
   async function handleStart() {
     try {
       const res = await startGridBot(lower, upper, grids, investment);
-      setActiveBot(res); // ✅ show bot config returned from backend
+
+      // ✅ Update active bot info
+      setActiveBot(res);
+
+      // ✅ Sync backend values into input fields
+      if (res.lower !== undefined) setLower(res.lower);
+      if (res.upper !== undefined) setUpper(res.upper);
+      if (res.grids !== undefined) setGrids(res.grids);
+      if (res.investment !== undefined) setInvestment(res.investment);
+
     } catch (err) {
       console.error("Error starting grid bot:", err);
     }
@@ -22,6 +30,12 @@ function TradeBotControl() {
     try {
       await stopGridBot();
       setActiveBot(null);
+
+      // Optional: clear inputs when bot stops
+      setLower("");
+      setUpper("");
+      setGrids("");
+      setInvestment("");
     } catch (err) {
       console.error("Error stopping grid bot:", err);
     }
