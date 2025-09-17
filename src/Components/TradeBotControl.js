@@ -31,7 +31,7 @@ function TradeBotControl() {
       await stopGridBot();
       setActiveBot(null);
 
-      // Optional: clear inputs when bot stops
+      // ✅ Optional: reset inputs on stop
       setLower("");
       setUpper("");
       setGrids("");
