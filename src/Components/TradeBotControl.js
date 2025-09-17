@@ -12,6 +12,8 @@ function TradeBotControl() {
     try {
       const res = await startGridBot(lower, upper, grids, investment);
 
+      console.log("Backend Response:", res); // ✅ Debug log
+
       // ✅ Update active bot info
       setActiveBot(res);
 
@@ -31,7 +33,7 @@ function TradeBotControl() {
       await stopGridBot();
       setActiveBot(null);
 
-      // ✅ Optional: reset inputs on stop
+      // Optional: clear inputs when bot stops
       setLower("");
       setUpper("");
       setGrids("");
