@@ -1,23 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+// src/App.js
+import React from "react";
+import PriceDisplay from "./Components/PriceDisplay";
+import TradeViewer from "./Components/TradeViewer";
+import GridBotControls from "./Components/GridBotControls";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="dashboard" style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
+      <h1>Trading Dashboard</h1>
+
+      {/* ✅ Live Price */}
+      <section style={{ marginBottom: "20px" }}>
+        <PriceDisplay />
+      </section>
+
+      {/* ✅ Trade Log */}
+      <section style={{ marginBottom: "20px" }}>
+        <TradeViewer />
+      </section>
+
+      {/* ✅ Grid Bot Controls */}
+      <section style={{ marginBottom: "20px" }}>
+        <GridBotControls />
+      </section>
     </div>
   );
 }
