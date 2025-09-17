@@ -1,3 +1,5 @@
+// src/Components/TradeBotControl.js
+
 import React, { useState } from "react";
 import { startGridBot, stopGridBot } from "../Services/Api";
 
@@ -14,7 +16,6 @@ function TradeBotControl() {
 
       console.log("Backend Response:", res); // ✅ Debug log
 
-      // ✅ Update active bot info
       setActiveBot(res);
 
       // ✅ Sync backend values into input fields
@@ -33,7 +34,7 @@ function TradeBotControl() {
       await stopGridBot();
       setActiveBot(null);
 
-      // Optional: clear inputs when bot stops
+      // Optional: clear inputs
       setLower("");
       setUpper("");
       setGrids("");
@@ -47,7 +48,6 @@ function TradeBotControl() {
     <div style={{ marginTop: "20px" }}>
       <h2>Grid Bot Controls</h2>
 
-      {/* ✅ Show active bot if running */}
       {activeBot ? (
         <div style={{ marginBottom: "15px" }}>
           <p><strong>Bot Running</strong></p>
@@ -60,7 +60,6 @@ function TradeBotControl() {
         <p>No active bot</p>
       )}
 
-      {/* Form Inputs */}
       <div>
         <label>Lower Price: </label>
         <input
@@ -94,7 +93,6 @@ function TradeBotControl() {
         />
       </div>
 
-      {/* Buttons */}
       <button onClick={handleStart}>Start Grid Bot</button>
       <button onClick={handleStop} style={{ marginLeft: "10px" }}>
         Stop Grid Bot
