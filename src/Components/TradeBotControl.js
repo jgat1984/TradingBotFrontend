@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { startGridBot, stopGridBot } from "../Services/Api";
 
 function TradeBotControl() {
@@ -8,21 +8,41 @@ function TradeBotControl() {
   const [investment, setInvestment] = useState("");
   const [activeBot, setActiveBot] = useState(null);
 
+  // ✅ On load, get default values from backend preview
+  useEffect(() => {
+    async function fetchDefaults() {
+      try {
+        const res = await fetch("https://tradingbotapi.onrender.com/api/trading/preview-gridbot");
+        if (!res.ok) throw new Error("Failed to fetch preview");
+        const data = await res.json();
+
+        console.log("Preview Defaults:", data);
+
+        setLower(data.lower ?? "");
+        setUpper(data.upper ?? "");
+        setGrids(data.grids ?? "");
+        setInvestment(data.investment ?? "");
+      } catch (err) {
+        console.error("Error fetching defaults:", err);
+      }
+    }
+
+    fetchDefaults();
+  }, []);
+
   async function handleStart() {
     try {
       const res = await startGridBot(lower, upper, grids, investment);
 
-      console.log("Backend Response:", res); // ✅ Debug log
+      console.log("Backend Response:", res);
 
-      // ✅ Save full backend response
       setActiveBot(res);
 
-      // ✅ Always sync backend values into inputs
+      // ✅ Sync backend values into inputs
       setLower(res.lower ?? "");
       setUpper(res.upper ?? "");
       setGrids(res.grids ?? "");
       setInvestment(res.investment ?? "");
-
     } catch (err) {
       console.error("Error starting grid bot:", err);
     }
@@ -33,7 +53,7 @@ function TradeBotControl() {
       await stopGridBot();
       setActiveBot(null);
 
-      // Optional: keep last values in inputs or clear them
+      // Optional: clear inputs when bot stops
       setLower("");
       setUpper("");
       setGrids("");
@@ -47,7 +67,6 @@ function TradeBotControl() {
     <div style={{ marginTop: "20px" }}>
       <h2>Grid Bot Controls</h2>
 
-      {/* ✅ Show backend response summary */}
       {activeBot ? (
         <div style={{ marginBottom: "15px" }}>
           <p><strong>Bot Running</strong></p>
@@ -60,7 +79,6 @@ function TradeBotControl() {
         <p>No active bot</p>
       )}
 
-      {/* ✅ Input fields bound to state */}
       <div>
         <label>Lower Price: </label>
         <input
@@ -96,7 +114,6 @@ function TradeBotControl() {
         />
       </div>
 
-      {/* Buttons */}
       <button onClick={handleStart}>Start Grid Bot</button>
       <button onClick={handleStop} style={{ marginLeft: "10px" }}>
         Stop Grid Bot
