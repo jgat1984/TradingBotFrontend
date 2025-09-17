@@ -2,7 +2,7 @@
 const API_BASE =
   process.env.NODE_ENV === "production"
     ? "https://tradingbotapi.onrender.com/trading" // ✅ Render production
-    : "http://localhost:5126/api/trading";         // ✅ Local dev (keep /api if local uses it)
+    : "http://localhost:5126/api/trading";         // ✅ Local dev
 
 // Get latest price
 export async function getLatestPrice(pair = "XRPUSD") {
