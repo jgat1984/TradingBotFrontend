@@ -1,4 +1,3 @@
-// src/Components/PriceDisplay.js
 import React, { useEffect, useState } from "react";
 import { getLatestPrice } from "../Services/Api";
 
@@ -7,20 +6,21 @@ function PriceDisplay() {
   const [pair, setPair] = useState("XRPUSD");
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetchPrice() {
-      try {
-        const data = await getLatestPrice(pair);
-        setPrice(data.price);
-      } catch (err) {
-        console.error("Error fetching price:", err);
-      } finally {
-        setLoading(false);
-      }
+  async function fetchPriceData() {
+    try {
+      const data = await getLatestPrice(pair);
+      setPrice(data.price);
+    } catch (err) {
+      console.error("Error fetching price:", err);
+      setPrice(null);
+    } finally {
+      setLoading(false);
     }
+  }
 
-    fetchPrice();
-    const interval = setInterval(fetchPrice, 5000); // refresh every 5s
+  useEffect(() => {
+    fetchPriceData();
+    const interval = setInterval(fetchPriceData, 5000); // refresh every 5s
     return () => clearInterval(interval);
   }, [pair]);
 
@@ -31,7 +31,7 @@ function PriceDisplay() {
         <p>Loading...</p>
       ) : (
         <p>
-          {pair}: <strong>${price}</strong>
+          {pair}: <strong>{price !== null ? `$${price}` : "N/A"}</strong>
         </p>
       )}
     </div>
