@@ -1,13 +1,10 @@
 // src/Services/Api.js
 
-// ✅ Switch between local backend (development) and Render (production)
-const API_BASE =
-  process.env.NODE_ENV === "development"
-    ? "https://localhost:5126/api/trading" // local backend
-    : "https://tradingbotapi.onrender.com/api/trading"; // Render backend
+// Make sure this matches your Render backend URL
+const API_BASE = "https://tradingbotapi.onrender.com/api/trading";
 
 // ----------------------
-// Latest Price
+// Price
 // ----------------------
 export async function getLatestPrice(pair = "XRPUSD") {
   const res = await fetch(`${API_BASE}/get-latest-price?pair=${pair}`);
@@ -41,14 +38,16 @@ export async function startGridBot(lower, upper, grids, investment) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      lower: parseFloat(lower) || 0,
-      upper: parseFloat(upper) || 0,
-      grids: parseInt(grids) || 0,
-      investment: parseFloat(investment) || 0,
+      lower: parseFloat(lower),
+      upper: parseFloat(upper),
+      grids: parseInt(grids),
+      investment: parseFloat(investment),
     }),
   });
 
   if (!res.ok) throw new Error("Failed to start grid bot");
+
+  // ✅ Backend returns { lower, upper, grids, investment, message }
   return res.json();
 }
 
@@ -61,10 +60,10 @@ export async function stopGridBot() {
 }
 
 // ----------------------
-// Preview Grid Bot (optional defaults preview)
+// Optional: Active Bot Config
 // ----------------------
-export async function previewGridBot(investment = 0) {
-  const res = await fetch(`${API_BASE}/preview-gridbot?investment=${investment}`);
-  if (!res.ok) throw new Error("Failed to preview grid bot");
+export async function getActiveBot() {
+  const res = await fetch(`${API_BASE}/active-bot`);
+  if (!res.ok) throw new Error("Failed to fetch active bot");
   return res.json();
 }
