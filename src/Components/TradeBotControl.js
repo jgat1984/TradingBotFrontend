@@ -1,5 +1,3 @@
-// src/Components/TradeBotControl.js
-
 import React, { useState } from "react";
 import { startGridBot, stopGridBot } from "../Services/Api";
 
@@ -16,13 +14,14 @@ function TradeBotControl() {
 
       console.log("Backend Response:", res); // ✅ Debug log
 
+      // ✅ Save full backend response
       setActiveBot(res);
 
-      // ✅ Sync backend values into input fields
-      if (res.lower !== undefined) setLower(res.lower);
-      if (res.upper !== undefined) setUpper(res.upper);
-      if (res.grids !== undefined) setGrids(res.grids);
-      if (res.investment !== undefined) setInvestment(res.investment);
+      // ✅ Always sync backend values into inputs
+      setLower(res.lower ?? "");
+      setUpper(res.upper ?? "");
+      setGrids(res.grids ?? "");
+      setInvestment(res.investment ?? "");
 
     } catch (err) {
       console.error("Error starting grid bot:", err);
@@ -34,7 +33,7 @@ function TradeBotControl() {
       await stopGridBot();
       setActiveBot(null);
 
-      // Optional: clear inputs
+      // Optional: keep last values in inputs or clear them
       setLower("");
       setUpper("");
       setGrids("");
@@ -48,6 +47,7 @@ function TradeBotControl() {
     <div style={{ marginTop: "20px" }}>
       <h2>Grid Bot Controls</h2>
 
+      {/* ✅ Show backend response summary */}
       {activeBot ? (
         <div style={{ marginBottom: "15px" }}>
           <p><strong>Bot Running</strong></p>
@@ -60,10 +60,12 @@ function TradeBotControl() {
         <p>No active bot</p>
       )}
 
+      {/* ✅ Input fields bound to state */}
       <div>
         <label>Lower Price: </label>
         <input
           type="number"
+          step="0.0001"
           value={lower}
           onChange={(e) => setLower(e.target.value)}
         />
@@ -72,6 +74,7 @@ function TradeBotControl() {
         <label>Upper Price: </label>
         <input
           type="number"
+          step="0.0001"
           value={upper}
           onChange={(e) => setUpper(e.target.value)}
         />
@@ -93,6 +96,7 @@ function TradeBotControl() {
         />
       </div>
 
+      {/* Buttons */}
       <button onClick={handleStart}>Start Grid Bot</button>
       <button onClick={handleStop} style={{ marginLeft: "10px" }}>
         Stop Grid Bot
