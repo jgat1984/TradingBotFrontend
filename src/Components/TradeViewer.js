@@ -4,9 +4,15 @@ import { getTrades } from "../Services/Api";
 function TradeViewer() {
   const [trades, setTrades] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [sessionProfit, setSessionProfit] = useState(0); // ✅ track session profit
+  const [sessionProfit, setSessionProfit] = useState(0);
 
-  // fetch trades
+  // ✅ Use same API_BASE logic as in services/api.js
+  const API_BASE =
+    process.env.NODE_ENV === "production"
+      ? "https://tradingbotapi.onrender.com/api/trading"
+      : "http://localhost:5126/api/trading";
+
+  // Fetch trades
   async function fetchTrades() {
     try {
       const data = await getTrades();
@@ -23,10 +29,11 @@ function TradeViewer() {
     }
   }
 
-  // fetch session profit
+  // Fetch session profit
   async function fetchSessionProfit() {
     try {
-      const res = await fetch("http://localhost:5126/api/trading/session-profit");
+      const res = await fetch(`${API_BASE}/session-profit`);
+      if (!res.ok) throw new Error("Failed to fetch session profit");
       const data = await res.json();
       setSessionProfit(data.sessionProfit || 0);
     } catch (err) {
@@ -41,6 +48,7 @@ function TradeViewer() {
     }
 
     fetchAll();
+    // ✅ Auto-refresh every 5s like a real trading terminal
     const interval = setInterval(fetchAll, 5000);
     return () => clearInterval(interval);
   }, []);
@@ -63,7 +71,7 @@ function TradeViewer() {
       {trades.length === 0 ? (
         <p>No trades yet...</p>
       ) : (
-        <table border="1" cellPadding="6" style={{ width: "100%" }}>
+        <table border="1" cellPadding="6" style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr>
               <th>ID</th>
