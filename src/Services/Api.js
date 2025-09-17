@@ -1,12 +1,15 @@
 // src/Services/Api.js
 
-// ✅ Make sure this matches your Render backend URL
-const API_BASE = "https://tradingbotapi.onrender.com/api/trading"; 
+// ✅ Switch between local backend (development) and Render (production)
+const API_BASE =
+  process.env.NODE_ENV === "development"
+    ? "https://localhost:5126/api/trading" // local backend
+    : "https://tradingbotapi.onrender.com/api/trading"; // Render backend
 
 // ----------------------
-// Price
+// Latest Price
 // ----------------------
-export async function getPrice(pair = "XRPUSD") {
+export async function getLatestPrice(pair = "XRPUSD") {
   const res = await fetch(`${API_BASE}/get-latest-price?pair=${pair}`);
   if (!res.ok) throw new Error("Failed to fetch price");
   return res.json();
@@ -38,15 +41,15 @@ export async function startGridBot(lower, upper, grids, investment) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      lower: parseFloat(lower),
-      upper: parseFloat(upper),
-      grids: parseInt(grids),
-      investment: parseFloat(investment),
+      lower: parseFloat(lower) || 0,
+      upper: parseFloat(upper) || 0,
+      grids: parseInt(grids) || 0,
+      investment: parseFloat(investment) || 0,
     }),
   });
 
   if (!res.ok) throw new Error("Failed to start grid bot");
-  return res.json(); // ✅ contains {lower, upper, grids, investment, message}
+  return res.json();
 }
 
 export async function stopGridBot() {
@@ -58,11 +61,10 @@ export async function stopGridBot() {
 }
 
 // ----------------------
-// (Optional) Active Bot Config
+// Preview Grid Bot (optional defaults preview)
 // ----------------------
-// Only works if you add /active-bot endpoint in TradingController
-export async function getActiveBot() {
-  const res = await fetch(`${API_BASE}/active-bot`);
-  if (!res.ok) throw new Error("Failed to fetch active bot");
+export async function previewGridBot(investment = 0) {
+  const res = await fetch(`${API_BASE}/preview-gridbot?investment=${investment}`);
+  if (!res.ok) throw new Error("Failed to preview grid bot");
   return res.json();
 }
