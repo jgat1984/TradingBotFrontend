@@ -7,7 +7,7 @@ function TradeViewer() {
   const [sessionProfit, setSessionProfit] = useState(0);
 
   // Fetch trades
-  async function fetchTradesData() {
+  async function fetchTrades() {
     try {
       const data = await getTrades();
       if (Array.isArray(data)) {
@@ -24,24 +24,23 @@ function TradeViewer() {
   }
 
   // Fetch session profit
-  async function fetchProfitData() {
+  async function fetchSessionProfitData() {
     try {
       const data = await getSessionProfit();
       setSessionProfit(data.sessionProfit || 0);
     } catch (err) {
       console.error("Error fetching session profit:", err);
-      setSessionProfit(0);
     }
   }
 
   useEffect(() => {
     async function fetchAll() {
-      await fetchTradesData();
-      await fetchProfitData();
+      await fetchTrades();
+      await fetchSessionProfitData();
     }
 
     fetchAll();
-    // Auto-refresh every 5s
+    // Auto-refresh every 5 seconds
     const interval = setInterval(fetchAll, 5000);
     return () => clearInterval(interval);
   }, []);
@@ -52,7 +51,7 @@ function TradeViewer() {
     <div>
       <h2>Trade Log</h2>
 
-      {/* ✅ Session profit above the table */}
+      {/* ✅ Show session profit above the table */}
       <h3
         style={{
           color: sessionProfit > 0 ? "green" : sessionProfit < 0 ? "red" : "black",
@@ -64,11 +63,7 @@ function TradeViewer() {
       {trades.length === 0 ? (
         <p>No trades yet...</p>
       ) : (
-        <table
-          border="1"
-          cellPadding="6"
-          style={{ width: "100%", borderCollapse: "collapse" }}
-        >
+        <table border="1" cellPadding="6" style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr>
               <th>ID</th>
