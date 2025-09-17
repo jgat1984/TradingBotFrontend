@@ -5,18 +5,19 @@ function TradeBotControl() {
   const [lower, setLower] = useState("");
   const [upper, setUpper] = useState("");
   const [grids, setGrids] = useState("");
-  const [investment, setInvestment] = useState(""); // ✅ new state
+  const [investment, setInvestment] = useState("");
   const [status, setStatus] = useState("");
   const [currentPrice, setCurrentPrice] = useState(null);
 
-  // ✅ Fetch current price for display
+  // Fetch current price
   useEffect(() => {
     async function fetchPrice() {
       try {
-        const res = await getLatestPrice();
-        setCurrentPrice(res.price);
+        const data = await getLatestPrice();
+        setCurrentPrice(data.price);
       } catch (err) {
         console.error("Error fetching price:", err);
+        setCurrentPrice(null);
       }
     }
 
@@ -31,9 +32,9 @@ function TradeBotControl() {
         parseFloat(lower),
         parseFloat(upper),
         parseInt(grids),
-        parseFloat(investment) // ✅ pass investment
+        parseFloat(investment)
       );
-      setStatus(`✅ ${res.message}`);
+      setStatus(res?.message ? `✅ ${res.message}` : "✅ Bot started");
       console.log("Bot started:", res);
     } catch (err) {
       setStatus("❌ Error starting bot");
@@ -44,7 +45,7 @@ function TradeBotControl() {
   async function handleStop() {
     try {
       const res = await stopGridBot();
-      setStatus(`🛑 ${res.message}`);
+      setStatus(res?.message ? `🛑 ${res.message}` : "🛑 Bot stopped");
       console.log("Bot stopped:", res);
     } catch (err) {
       setStatus("❌ Error stopping bot");
@@ -55,7 +56,11 @@ function TradeBotControl() {
   return (
     <div>
       <h2>Grid Bot Controls</h2>
-      {currentPrice && <p>Current Price: ${currentPrice.toFixed(5)}</p>}
+      {currentPrice !== null && (
+        <p>
+          Current Price: <strong>${currentPrice.toFixed(5)}</strong>
+        </p>
+      )}
 
       <label>Lower Price:</label>
       <input
