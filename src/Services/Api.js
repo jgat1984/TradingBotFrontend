@@ -46,9 +46,7 @@ export async function startGridBot(lower, upper, grids, investment) {
   });
 
   if (!res.ok) throw new Error("Failed to start grid bot");
-
-  // ✅ Backend returns { lower, upper, grids, investment, message }
-  return res.json();
+  return res.json(); // ✅ backend returns JSON { lower, upper, grids, investment, message }
 }
 
 export async function stopGridBot() {
@@ -60,10 +58,13 @@ export async function stopGridBot() {
 }
 
 // ----------------------
-// Optional: Active Bot Config
+// (Optional) Active Bot Config
 // ----------------------
+// Enable only if backend supports it
+/*
 export async function getActiveBot() {
   const res = await fetch(`${API_BASE}/active-bot`);
   if (!res.ok) throw new Error("Failed to fetch active bot");
   return res.json();
 }
+*/
